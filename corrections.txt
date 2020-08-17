@@ -1,0 +1,177 @@
+<html>
+<head>
+<?php 
+session_start();
+if(!$_SESSION['loggedin'])
+{
+header("location:login.php");
+exit;
+}
+else
+echo"<p align='right'><h3><font color='orange'>Welcome, $username</h4></font></p>";
+?>
+</head>
+<body>
+<p align="right"><a href="profile.php">Home</a>&nbsp&nbsp&nbsp <a href="logoff.php">Log out</a>
+<p><b><h3>SELECT TYPE OF RECORDS THAT YOU WISH TO CORRECT</p></b></h3><hr>
+<div><strong>
+<form method="POST" action="approve.php">
+TYPE
+<select name="type" type="text">
+<option value="birth">BIRTHS</option>
+<option value="death">DEATH</option>
+</select>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+AGENT CODE:<input type="text" name="agent" maxlength="4" required>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+<!--MONTH:<input type="text" name="month" maxlength="4" required>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp-->
+<input type="submit" name="submit" value="View" onclick="view"></strong>
+</form>
+</div ><hr>
+<div id="view">
+<?php
+if(isset($_POST['submit']))
+if (isset($_POST['type'])) { $type = $_POST['type']; }
+if (isset($_POST['agent'])) { $agent = $_POST['agent']; } 
+	$conn=mysql_connect("localhost","root")or die("Couldn't connect...!");
+                  mysql_select_db("pomis") or die ("Couldn't find Database");
+				  if($type=="death"){
+				  	$select = "SELECT * FROM dreg where agentno=$agent and status='rejected'";
+					$qry=mysql_query($select);	
+					//echo"<table border=1 >";
+					while($rec = mysql_fetch_array($qry))
+					?>
+				   <div id="form2">
+<form method="post" action="dinsert.php">
+<p align="right">VERS/DF</p><p align="center">DEATH REGISTRATION FORM</P><hr><br>
+
+<p align="right">BURIAL PERMIT No:<input type="text" name="permit" maxlength="7" value <?php echo $rec['permit_no']?>></p><br><hr>
+DECEASED(NAME):<input type="text" name="deceased" maxlength="30" value=<?php echo $rec['dname']?> >&nbsp
+DOD:<input type="date" name="dod" maxlength="20" value=<?php echo $rec['dob']?>><br><br>
+AGE(Years):<input type="integer" name="age" maxlength="3" value=<?php echo $rec['age']?>>
+ID Card No:<input type="integer" name="card" maxlength="8" value=<?php echo $rec['id_no']?>><br><br>
+OCCUPATION:<input type="text" name="occ" maxlength="20" value=<?php echo $rec['occ']?>>
+SEX:<select name="sex" value=<?php echo $rec['sex']?>>
+<option value="MALE">MALE</option>
+<option value="FEMALE">FEMALE</option></SELECT><hr><BR>
+HOME COUNTY:<select name="county" value=<?php echo $rec['county']?>>
+<option value=""></option>
+<option value="mombasa">MOMBASA</option>
+<option value="lamu">LAMU</option>
+<option value="kwale">KWALE</option>
+<option value="kilifi">KILIFI</option>
+<option value="taita">TAITA TAVETA</option>
+<option value="makueni">MAKUENI</option>
+<option value="kajiado">KAJIADO</option>
+<option value="machakos">MACHAKOS</option>
+<option value="nairobi">NAIROBI</option>
+<option value="nakuru">KIAMBU</option>
+<option value="nyeri">NYERI</option>
+<option value="muranga">MURANG'A</option>
+<option value="embu">EMBU</option>
+<option value="kirinyaga">KIRINYAGA</option>
+<option value="meru">MERU</option>
+<option value="tharaka">THARAKA NITHI</option>
+<option value="isiolo">ISIOLO</option>
+<option value="garrisa">GARRISA</option>
+<option value="marsabit">MARSABIT</option>
+<option value="wajir">WAJIR</option>
+<option value="mandera">MANDERA</option>
+<option value="nakuru">NAKURU</option>
+<option value="kericho">KERICHO</option>
+<option value="nyandarua">NYANDARUA</option>
+<option value="laikipia">LAIKIPIA</option>
+<option value="uasingishu">UASIN GISHU</option>
+<option value="kisii">KISII</option>
+<option value="nyamira">NYAMIRA</option>
+<option value="homabay">HOMABAY</option>
+<option value="kisumu">KISUMU</option>
+<option value="baringo">BARINGO</option>
+<option value="turkana">TURKANA</option>
+<option value="samburu">SAMBURU</option></SELECT><BR><BR>
+ DEATH CAUSE
+<select name="dcause" <?php echo $rec['permit_no']?>>
+<option value=""></OPTION>
+<option value="Roadaccident">ROAD ACCIDENT</OPTION>
+<option value="cancer">CANCER</option>
+<option value="AIDS">AIDS</option>
+<option value="MALARIA">MALARIA</option>
+<option value="PNEUMONIA">PNEUMONIA</option>
+<option value="SUDDEN DEATH">SUDDEN DEATH</option>
+<option value="SNAKE BITE">SNAKE BITE</option>
+<option value="CARDIOPULMONARY ARREST">CARDIOPULMONARY ARREST</option>
+<option value="CHILD DELIVERY">CHILD DELIVERY</option>
+<option value="MURDER">MURDER</option>
+<option value="POISONING">POISONING</option>
+<option value="SUICIDE">SUICIDE</option>
+<option value="MENINGITIS">MENINGITIS</option>
+<option value="DROWNING">DROWNING</option>
+<option value="OLD AGE">OLD AGE</option></SELECT>
+PLACE OF DEATH:<input type="text" maxlength="20" name="pod" <?php echo $rec['pod']?>><BR><HR>
+INFORMANT:<input type="text" maxlength="20" name="informant" value=<?php echo $rec['informant']?>>
+DESCRIPTION:
+<select name="tinfo" value=<?php echo $rec['tinfo']?>>
+<option value="tinfo"></option>
+<option value="doctor">DOCTOR</optioN>
+<option value="POLICE">POLICE</optioN>
+<option value="PARENT">PARENT</OPTION>
+<option value="WIFE">WIFE</option>
+<option value="HUSBAND">HUSBAND</option>
+<option value="CHILD">CHILD</option>
+<option value="AUNT">AUNT</option>
+<option value="UNCLE">UNCLE</option>
+<option value="GRANDPARENT">GRANDPARENT</option></SELECT>
+<P>If Informant is Police,quote OB No.</p>
+<input type="text" name="obno" maxlength="20" <?php echo $rec['obno']?>>
+<p align="right">DATE OF REG:<input type="date" name="dor" value=<?php echo $rec['dor']?>></p>
+AGENT CODE:<input type="text" name="agentno" maxlength="4" value<?php echo $rec['agentno']?>><br><br><hr>
+<p align="center"> Please ensure that you have read through the details before registering. Thank you !</p>
+<p align="center"><input type="submit" name="submit" value="REGISTER"></p></div>
+</form>  
+                  
+				<?php
+					
+					/*{
+                  echo"<tr><td>".$rec["agentno"]."<td>".$rec["no"]."<td>".$rec["permit_no"]."<td>".$rec["dname"]."<td>".$rec["dod"]."<td>".$rec["pod"]."<td>".$rec["county"]."<td>".
+				  $rec["dcause"]."<td>".$rec["age"]."<td>".$rec["id_no"]."<td>".$rec["sex"]."<td>".$rec["occupation"]."<td>".$rec["informant"]."<td>".$rec["tinfo"]."<td>".$rec["dor"];
+				  echo"<td><form method='POST' action='approve13.php'>
+				  <input type='hidden' name='number' value=".$rec['no'].">
+				  <input type='hidden' value=$agent><input type='submit' name='submit' value='Approve'></form></td>";
+				  echo"<td><form method='POST' action='deathrej.php'>
+				  <input type='hidden' name='number' value=".$rec['no'].">
+				  <input type='submit' name='submit' value='Reject'/></form></td>";
+				  }
+					echo"</table>";
+					
+					}
+					else
+					if($type=="birth"){
+					$select = "SELECT * FROM breg where agentno=$agent and status!='approved' and status!='rejected'" ;
+					$qry=mysql_query($select);	
+					/*echo "<TABLE BORDER=2>";
+echo"<TR><TD><B>AGENT NO</B><TD><B>NO</B><TD><B>NOTIFICATION NO</B><TD><B>CHILD NAME</B><TD><B>DATE OF BIRTH</B><TD><B>PLACE OF BIRTH</B><TD><B>SEX</B><TD><B>MOTHER</B><TD><B>AGE</B>
+<TD><B>ID CARD NO</B><TD><B>MARITAL STATUS</B><TD><B>RESIDENCE</B><TD><B>FATHER</B><TD><B>AGE</B><TD><B>ID CARD NO</B><TD><B>DATE REGISTERED</B>
+<TD><B>INFORMANT</B><TD><B>COUNTY</B></TD><TD><B>TIME REGISTERED</B></TR>";*/
+while ($myrow = mysql_fetch_array($qry))
+{
+echo "<TR><TD>".$myrow["agentno"]."<TD>".$myrow["no"]."<td>".$myrow["notification_no"]." <td>".$myrow["childname"]."<TD>".$myrow["dob"]."<TD>".$myrow["pob"]."<TD>".$myrow["sex"]."<TD>".$myrow["mother"].
+"<TD>".$myrow["age"]."<td>".$myrow["id_no"]."<td>".$myrow["m_status"]."<td>".$myrow["residence"]."<TD>".$myrow["father"]."<td>".$myrow["age2"]."<td>".$myrow["id_no2"]."<TD>".$myrow["dreg"]."<TD>".$myrow["informant"]."<TD>".$myrow["county"]."<TD>".$myrow["timeSys"];
+echo"<td><form method='POST' action='approve12.php'>
+<input type='hidden' name='number' value=".$myrow['no'].">
+<input type='submit' name='submit' value='Approve'></form></td>";
+				  echo"<td><form method='POST' action='birthreg.php'>
+				  <input type='hidden' name='number' value=".$myrow['no'].">
+				  <input type='submit' name='submit' value='Reject'/></form></td>";
+				  
+}
+echo "</TABLE>";
+mysql_close($conn);
+					}
+				?>
+				
+</div>
+<script type="text/javascript">
+function view(){
+document.getElementById("view");
+}
+</script>
+</body>
+</html>
